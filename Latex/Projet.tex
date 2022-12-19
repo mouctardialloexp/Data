@@ -1,0 +1,2153 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Projet}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \textbf{\emph{Analyse, classification et prédiction de consommation
+d'électricité en France par des techniques de machine learning}}
+
+    \hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+L'analyse, la classification et la prédiction de la consommation
+d'électricité sont des sujets importants pour comprendre et améliorer
+l'efficacité énergétique. Les techniques de machine learning peuvent
+être utilisées pour extraire des informations utiles à partir de données
+de consommation d'électricité, ainsi que pour prédire les tendances
+futures de consommation. Cette analyse peut aider les entreprises de
+l'industrie électrique à mieux comprendre les comportements de
+consommation de leurs clients, ainsi qu'à développer des stratégies pour
+améliorer l'efficacité énergétique à tous les niveaux
+
+    La production d'électricité en France varie en fonction de différents
+facteurs, tels que la demande, les conditions météorologiques, les
+contraintes techniques et les politiques énergétiques. La France importe
+également une partie de son électricité pour répondre à sa demande.
+
+    Nous verrons comment les algorithmes d'apprentissage automatique peuvent
+être utilisés pour extraire des informations précieuses à partir de
+données de consommation d'électricité, telles que les modèles de
+consommation, les tendances de consommation et les prévisions de
+consommation future
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} \PYZhy{}*\PYZhy{} coding: utf\PYZhy{}8 \PYZhy{}*\PYZhy{}}
+\PY{c+c1}{\PYZsh{}importer les librairies dont nous aurons besoin pour ce projet}
+\PY{c+c1}{\PYZsh{}Matplotlib est la librairie qui permet de visualiser nos Datasets, nos fonctions, nos résultats sous forme de graphiques, courbes et nuages de points.}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{c+c1}{\PYZsh{}pandas pour l\PYZsq{}extraction des données et le traitement}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{c+c1}{\PYZsh{}Numpy pour manipuler notre Dataset en tant que matrice}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{api} \PY{k}{as} \PY{n+nn}{sm}
+
+\PY{c+c1}{\PYZsh{}our l\PYZsq{}affichage des donnée tableau}
+\PY{k+kn}{from} \PY{n+nn}{IPython}\PY{n+nn}{.}\PY{n+nn}{display} \PY{k+kn}{import} \PY{n}{display}
+
+\PY{c+c1}{\PYZsh{}Calculez les quantiles d\PYZsq{}un diagramme de probabilité et affichez éventuellement le diagramme}
+\PY{k+kn}{from} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{graphics}\PY{n+nn}{.}\PY{n+nn}{gofplots} \PY{k+kn}{import} \PY{n}{ProbPlot}
+
+\PY{c+c1}{\PYZsh{}pour ignorer tous les avertissements qui pourraient être générés pendant l\PYZsq{}exécution du code}
+\PY{k+kn}{import} \PY{n+nn}{warnings}                                  
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k+kn}{import} \PY{n}{figure}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{nettoyage-analyse}{%
+\subsection{Nettoyage, Analyse}\label{nettoyage-analyse}}
+
+Analyse, classification et prédiction de consommation d'électricité par
+des techniques de machine learning qui s'inscrit dans le contexte de
+l'analyse des données (Data Analytics) \emph{Source de nos données}\\
+\href{https://www.rte-france.com/eco2mix/telecharger-les-indicateurs}{Données
+en énergie (consolidées et définitives) RTE FRANCE}\\
+Elles concernent la France et les 12 régions administratives.\\
+\href{https://cegibat.grdf.fr/simulateur/calcul-dju}{Calcul des degrés
+jours unifiés (DJU) CEGIBAT}\\
+Cet outil, réalisé en partenariat avec Météo France, permet de calculer
+les degrés jour (DJ ou DJU) chauffage ou climatisation sur une période,
+une station météo et un seuil de température donnés.\\
+
+\emph{Les données de l'energie sont exprimées en Gigawatt (GWh).}~
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Traitement du jeu de donnée}
+
+\PY{c+c1}{\PYZsh{}Chargement du dataset \PYZsq{}new\PYZus{}data \PYZhy{} new\PYZus{}data.csv\PYZsq{}}
+\PY{n}{data\PYZus{}coso\PYZus{}prod}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{new\PYZus{}data \PYZhy{} new\PYZus{}data.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}afficher les 10 prémière ligne des données importées}
+\PY{n}{data\PYZus{}coso\PYZus{}prod}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{35}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Mois              Qualité               Territoire  Production totale  \textbackslash{}
+35  2012-12  Données définitives                   France              54715
+36  2013-01  Données définitives                Grand-Est               9924
+37  2013-01  Données définitives       Nouvelle-Aquitaine               5644
+38  2013-01  Données définitives     Auvergne-Rhône-Alpes              13119
+39  2013-01  Données définitives  Bourgogne-Franche-Comté                403
+40  2013-01  Données définitives                 Bretagne                246
+41  2013-01  Données définitives      Centre-Val de Loire               7965
+42  2013-01  Données définitives                   France              57739
+43  2013-01  Données définitives            Ile-de-France                870
+44  2013-01  Données définitives                Occitanie               3450
+45  2013-01  Données définitives                Normandie               8304
+46  2013-01  Données définitives          Hauts-de-France               4786
+47  2013-01  Données définitives                     PACA               1941
+48  2013-01  Données définitives         Pays-de-la-Loire                933
+49  2013-02  Données définitives                Grand-Est               9057
+
+    Production nucléaire  Production thermique totale  \textbackslash{}
+35               39912.0                       5319.0
+36                7258.0                       1508.0
+37                4801.0                        187.0
+38                9641.0                        278.0
+39                   NaN                        244.0
+40                   NaN                         49.0
+41                7717.0                         70.0
+42               42406.0                       6301.0
+43                   NaN                        753.0
+44                1853.0                         76.0
+45                7473.0                        677.0
+46                3660.0                        797.0
+47                   NaN                        759.0
+48                   NaN                        817.0
+49                6086.0                       1863.0
+
+    Production thermique charbon  Production thermique fioul  \textbackslash{}
+35                        1714.0                       548.0
+36                         928.0                         8.0
+37                           NaN                         0.0
+38                           0.0                        49.0
+39                          75.0                         0.0
+40                           NaN                         1.0
+41                           NaN                         2.0
+42                        2566.0                       393.0
+43                         195.0                        37.0
+44                           NaN                        10.0
+45                         392.0                        47.0
+46                         118.0                         0.0
+47                         254.0                       128.0
+48                         600.0                        22.0
+49                        1087.0                         8.0
+
+    Production thermique gaz  Production hydraulique  {\ldots}  \textbackslash{}
+35                    3057.0                  6521.0  {\ldots}
+36                     570.0                   814.0  {\ldots}
+37                     186.0                   465.0  {\ldots}
+38                     227.0                  3047.0  {\ldots}
+39                     168.0                   121.0  {\ldots}
+40                      48.0                    56.0  {\ldots}
+41                      67.0                    24.0  {\ldots}
+42                    3342.0                  6906.0  {\ldots}
+43                     520.0                     0.0  {\ldots}
+44                      65.0                  1214.0  {\ldots}
+45                     238.0                    15.0  {\ldots}
+46                     678.0                     1.0  {\ldots}
+47                     376.0                  1079.0  {\ldots}
+48                     193.0                     1.0  {\ldots}
+49                     768.0                   708.0  {\ldots}
+
+    Consommation totale  Solde exportateur  Echanges export  Echanges import  \textbackslash{}
+35                49602             4367.0           6716.0           2349.0
+36                    0                0.0              NaN              NaN
+37                    0                0.0              NaN              NaN
+38                    0                0.0              NaN              NaN
+39                    0                0.0              NaN              NaN
+40                    0                0.0              NaN              NaN
+41                    0                NaN              NaN              NaN
+42                53619             3484.0           6604.0           3120.0
+43                    0                NaN              NaN              NaN
+44                    0                NaN              NaN              NaN
+45                    0                NaN              NaN              NaN
+46                    0                NaN              NaN              NaN
+47                    0                NaN              NaN              NaN
+48                    0                NaN              NaN              NaN
+49                    0                0.0              NaN              NaN
+
+    Echanges avec le Royaume-Uni  Echanges avec l'Espagne  \textbackslash{}
+35                         529.0                    -30.0
+36                           NaN                      NaN
+37                           NaN                      NaN
+38                           NaN                      NaN
+39                           NaN                      NaN
+40                           NaN                      NaN
+41                           NaN                      NaN
+42                         493.0                     91.0
+43                           NaN                      NaN
+44                           NaN                      NaN
+45                           NaN                      NaN
+46                           NaN                      NaN
+47                           NaN                      NaN
+48                           NaN                      NaN
+49                           NaN                      NaN
+
+    Echanges avec l'Italie  Echanges avec la Suisse  \textbackslash{}
+35                  1292.0                   1718.0
+36                     NaN                      NaN
+37                     NaN                      NaN
+38                     NaN                      NaN
+39                     NaN                      NaN
+40                     NaN                      NaN
+41                     NaN                      NaN
+42                  1499.0                   1666.0
+43                     NaN                      NaN
+44                     NaN                      NaN
+45                     NaN                      NaN
+46                     NaN                      NaN
+47                     NaN                      NaN
+48                     NaN                      NaN
+49                     NaN                      NaN
+
+    Echanges avec l'Allemagne et la Belgique  Unnamed: 22
+35                                     859.0          NaN
+36                                       NaN          NaN
+37                                       NaN          NaN
+38                                       NaN          NaN
+39                                       NaN          NaN
+40                                       NaN          NaN
+41                                       NaN          NaN
+42                                    -265.0          NaN
+43                                       NaN          NaN
+44                                       NaN          NaN
+45                                       NaN          NaN
+46                                       NaN          NaN
+47                                       NaN          NaN
+48                                       NaN          NaN
+49                                       NaN          NaN
+
+[15 rows x 23 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{collecte-et-pruxe9-traitement-de-donnuxe9es-de-consommation}{%
+\section{Collecte et pré-traitement de données de
+consommation}\label{collecte-et-pruxe9-traitement-de-donnuxe9es-de-consommation}}
+
+Création du dataset de consommation mensuelle d'électricité en France
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}On prend juste les données de la france}
+\PY{c+c1}{\PYZsh{}Copier dans consommation}
+\PY{n}{consommation}\PY{o}{=}\PY{n}{data\PYZus{}coso\PYZus{}prod}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Trier et extraire seulement ce qui nous intéresse}
+\PY{n}{consommation}\PY{o}{=}\PY{n}{consommation}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation totale}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}On récupère les information où Territoire=France et on laisse les données des régions}
+\PY{n}{consommation}\PY{o}{=}\PY{n}{consommation}\PY{p}{[}\PY{n}{consommation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{France}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}Eliminer les données manquantes}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}renommer les colonnes Mois et Consommation Totale}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation totale}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Aperçu des données mensuelles de consommation totale d\PYZsq{}électricité de notre copy consommation}
+\PY{n}{display}\PY{p}{(}\PY{n}{consommation}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}nobre de ligne et de colonne}
+\PY{n}{display}\PY{p}{(}\PY{n}{consommation}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      mois  consommationT
+0  2010-01          56342
+1  2010-02          48698
+2  2010-03          48294
+3  2010-04          38637
+4  2010-05          37284
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(143, 2)
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Triez par les valeurs le long de chaque axe mois par ordre croissant}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      mois  consommationT
+0  2010-01          56342
+1  2010-02          48698
+2  2010-03          48294
+3  2010-04          38637
+4  2010-05          37284
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Changement du type de Series en datetime}
+\PY{c+c1}{\PYZsh{}Changement d\PYZsq{}index pour que la série temporelle soit reconnue}
+\PY{n}{consommation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{consommation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Visualisation des données selon l\PYZsq{}indice temporel mois/année}
+\PY{c+c1}{\PYZsh{}print(consommation)}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            consommationT
+mois
+2010-01-01          56342
+2010-02-01          48698
+2010-03-01          48294
+2010-04-01          38637
+2010-05-01          37284
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation totale d\PYZsq{}électricité en énergie }
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{consommation}\PY{o}{.}\PY{n}{consommationT}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation totale d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{électricité en France de 2010 à 2021}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{temps en mois}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{}Titre de l\PYZsq{}axe des abscisses}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{énergie en }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}Titre de l\PYZsq{}axe des ordonnées}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}Tracer le graphe}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Consommation totale d\PYZsq{}électricité en France de 2010 à 2021 par année }
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{consommation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation totale d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en France de 2010 à 2021 par année }\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_12_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}La fonction aggregate pour rassembler les statistique(moyenne, écart type, min, max)}
+\PY{n}{consommation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{agg}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                    mean          std    min    max
+mois
+2010-12-31  42756.333333  8528.680611  33069  57600
+2011-12-31  39898.916667  6996.660937  32625  53873
+2012-12-31  40793.083333  7718.614801  32247  54476
+2013-12-31  41236.833333  7937.459381  31591  53619
+2014-12-31  38762.500000  6471.028154  31004  49359
+2015-12-31  39670.833333  6866.459334  31603  52536
+2016-12-31  40268.250000  7118.985948  32132  50670
+2017-12-31  40167.333333  8086.311243  32110  57406
+2018-12-31  39869.250000  7234.222923  32451  50202
+2019-12-31  39478.250000  7070.561018  31505  54186
+2020-12-31  40744.833333  7698.871533  31772  53403
+2021-12-31  38401.727273  6889.040051  31184  52983
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Récapitulatif des consommations moyennes annuelles}
+\PY{n}{conso\PYZus{}annu}\PY{o}{=}\PY{n}{consommation}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{conso\PYZus{}annu}\PY{p}{)}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}annu}\PY{o}{.}\PY{n}{consommationT}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Récapitulatif des consommations moyennes annuelles}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{Timestamp}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2010\PYZhy{}01\PYZhy{}01}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{pd}\PY{o}{.}\PY{n}{Timestamp}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2022\PYZhy{}01\PYZhy{}01}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}Tracer le graphe}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+            consommationT
+mois
+2010-12-31         513076
+2011-12-31         478787
+2012-12-31         489517
+2013-12-31         494842
+2014-12-31         465150
+2015-12-31         476050
+2016-12-31         483219
+2017-12-31         482008
+2018-12-31         478431
+2019-12-31         473739
+2020-12-31         488938
+2021-12-31         422419
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{collecte-et-pruxe9-traitement-de-donnuxe9es-de-production}{%
+\section{Collecte et pré-traitement de données de
+production}\label{collecte-et-pruxe9-traitement-de-donnuxe9es-de-production}}
+
+Création du dataset de production mensuelle d'électricité en France
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}On prend juste les données de la production d\PYZsq{}électricité la france}
+\PY{c+c1}{\PYZsh{}Copier dans production}
+\PY{n}{production}\PY{o}{=}\PY{n}{data\PYZus{}coso\PYZus{}prod}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Trier et extraire seulement ce qui nous intéresse}
+\PY{n}{production}\PY{o}{=}\PY{n}{production}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Production totale}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}On récupère les information où Territoire=France et on laisse les données des régions}
+\PY{n}{production}\PY{o}{=}\PY{n}{production}\PY{p}{[}\PY{n}{production}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{France}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{}Eliminer les données manquantes}
+\PY{n}{production}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Territoire}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}renommer les colonnes Mois et Production totale}
+\PY{n}{production}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Production totale}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{productionT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Aperçu des données mensuelles de consommation totale d\PYZsq{}électricité de notre copy consommation}
+\PY{n}{display}\PY{p}{(}\PY{n}{production}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}nobre de ligne et de colonne}
+\PY{n}{display}\PY{p}{(}\PY{n}{production}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      mois  productionT
+0  2010-01        56542
+1  2010-02        50406
+2  2010-03        51071
+3  2010-04        41693
+4  2010-05        39847
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+(143, 2)
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Triez par les valeurs le long de chaque axe mois par ordre croissant}
+\PY{n}{production}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      mois  productionT
+0  2010-01        56542
+1  2010-02        50406
+2  2010-03        51071
+3  2010-04        41693
+4  2010-05        39847
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Changement du type de Series en datetime}
+\PY{c+c1}{\PYZsh{}Changement d\PYZsq{}index pour que la série temporelle soit reconnue}
+\PY{n}{production}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{production}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{production}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Visualisation des données selon l\PYZsq{}indice temporel mois\PYZhy{}année}
+\PY{c+c1}{\PYZsh{}print(consommation)}
+\PY{n}{production}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            productionT
+mois
+2010-01-01        56542
+2010-02-01        50406
+2010-03-01        51071
+2010-04-01        41693
+2010-05-01        39847
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation totale d\PYZsq{}électricité.}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{production}\PY{o}{.}\PY{n}{productionT}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Production totale d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{électricité en France de 2010 à 2021}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{années}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{}Titre de l\PYZsq{}axe des abscisses}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Production totale d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{énergie en France}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}Titre de l\PYZsq{}axe des ordonnées}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlim}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{Timestamp}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2010\PYZhy{}01\PYZhy{}01}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{pd}\PY{o}{.}\PY{n}{Timestamp}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2022\PYZhy{}01\PYZhy{}01}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}Tracer le graphe}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{consommation}\PY{o}{.}\PY{n}{consommationT}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Tendance de la consommation et de la production d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en France}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{production}\PY{o}{.}\PY{n}{productionT}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}Tracer le graphe}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_20_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Création d\PYZsq{}un échantillon de travail par jointure des deux précédents dataframe (Consommation, Production)}
+\PY{c+c1}{\PYZsh{}inner = prendre les donnée de meme longueure comme clé \PYZdq{}mois\PYZdq{} avace la fonction merge}
+\PY{n}{conso\PYZus{}prod} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{consommation}\PY{p}{,} \PY{n}{production}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{conso\PYZus{}prod}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            consommationT  productionT
+mois
+2010-01-01          56342        56542
+2010-02-01          48698        50406
+2010-03-01          48294        51071
+2010-04-01          38637        41693
+2010-05-01          37284        39847
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation et de la production}
+\PY{n}{conso\PYZus{}prod}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{productionT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{subplots}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_22_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    En général, il y a toujours un équilibre entre l'offre et la demande
+d'électricité en France, mais il peut y avoir des fluctuations au cours
+du temps en fonction de différents facteurs, tels que la météo, les
+besoins énergétiques saisonniers, limportation et l'exportation\ldots{}
+La France produit environ 500 TWh d'électricité par an, tandis que sa
+consommation est d'environ 550 TWh par an. La différence est comblée par
+des importations d'électricité.
+
+    C'est pour quoi, pour faire une prévision de la demande en électricité
+on va utiliser les données de météo france sur l'utilisation du
+chauffage en France.
+
+Le degré jour unifié (DJU) est la différence entre la température
+extérieure et une température de référence qui permet de réaliser des
+estimations de consommations d'énergie thermique pour maintenir un
+bâtiment confortable en proportion de la rigueur de l'hiver ou de la
+chaleur de l'été.
+
+Le degré jour est une valeur représentative de l'écart entre la
+température d'une journée donnée et un seuil de température préétabli
+(18 °C dans le cas des DJU ou Degré Jour Unifié). Sommés sur une
+période, ils permettent de calculer les besoins de chauffage et de
+climatisation d'un bâtiment.
+
+    \hypertarget{cruxe9ation-du-dataset-dju-chauffage-mensuelle-en-france}{%
+\section{Création du dataset dju chauffage mensuelle en
+France}\label{cruxe9ation-du-dataset-dju-chauffage-mensuelle-en-france}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Voyons l\PYZsq{}impact du chauffage électrique}
+\PY{c+c1}{\PYZsh{}Chargement du dataset \PYZsq{}dju.xlsx\PYZsq{}}
+\PY{n}{data\PYZus{}chauff} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chauff\PYZus{}calcul\PYZus{}DJU.xlsx \PYZhy{} DJU \PYZhy{} Mensuel.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{header}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{11}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}A partir de la ligne 11 du file excel}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       0      1      2      3      4      5     6    7    8     9      10  \textbackslash{}
+0     NaN    JAN    FÉV    MAR    AVR    MAI   JUN  JUI  AOÛ   SEP    OCT
+1  2022.0  385.4  269.8  226.7  171.9     41   1.7    0    0     0      0
+2  2021.0  396.7  302.8    271  228.3  138.3  11.1  0.2  5.1    21  150.7
+3  2020.0    339  249.6  268.6   81.4   65.7  20.6  0.9  4.5  34.3  157.5
+4  2019.0  404.9  268.3  233.1  168.5  117.9  24.4    0  1.7  26.7  133.7
+
+      11     12      13
+0    NOV    DÉC   Total
+1      0      0  1096.4
+2  310.8  323.8  2159.4
+3  227.2  336.8  1785.9
+4  282.6  327.3    1989
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comme l\PYZsq{}année 2022 n\PYZsq{}est pas encore fini, on va devoir travailler jusqu\PYZsq{}à l\PYZsq{}année 2021 }
+\PY{c+c1}{\PYZsh{}Suppression des deux premières lignes et dernière Series}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{13}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        0      1      2      3      4      5     6     7     8     9      10  \textbackslash{}
+2   2021.0  396.7  302.8    271  228.3  138.3  11.1   0.2   5.1    21  150.7
+3   2020.0    339  249.6  268.6   81.4   65.7  20.6   0.9   4.5  34.3  157.5
+4   2019.0  404.9  268.3  233.1  168.5  117.9  24.4     0   1.7  26.7  133.7
+5   2018.0  303.4  432.6  314.3  119.7   55.9   8.1     0   3.3  34.3  122.4
+6   2017.0  467.9  278.4  206.1  182.6     75   9.4     1   6.8  62.6   99.4
+7   2016.0  364.4  321.6  321.1  212.1   88.1  27.5   5.7   3.2  11.7    176
+8   2015.0    392  365.7  275.5  141.1   91.5  15.8   6.9   6.1  71.9  176.9
+9   2014.0  324.4  281.9  223.9  135.5  100.2  19.1   8.3  19.3    16   92.3
+10  2013.0  429.2  402.2  376.6  209.5  158.4  43.6   0.6     5  41.5    105
+11  2012.0    336  435.9  201.9  230.3   83.3    35  12.4   2.4    58  154.6
+
+       11     12
+2   310.8  323.8
+3   227.2  336.8
+4   282.6  327.3
+5   282.5  325.9
+6   282.6    369
+7   285.6  390.8
+8     195  248.1
+9   222.6  368.2
+10  303.9  349.5
+11  296.2  345.9
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}La première series est considérée comme index}
+\PY{n}{data\PYZus{}chauff}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{n}{data\PYZus{}chauff}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+         1      2      3      4      5     6     7     8     9      10     11  \textbackslash{}
+0
+2021  396.7  302.8    271  228.3  138.3  11.1   0.2   5.1    21  150.7  310.8
+2020    339  249.6  268.6   81.4   65.7  20.6   0.9   4.5  34.3  157.5  227.2
+2019  404.9  268.3  233.1  168.5  117.9  24.4     0   1.7  26.7  133.7  282.6
+2018  303.4  432.6  314.3  119.7   55.9   8.1     0   3.3  34.3  122.4  282.5
+2017  467.9  278.4  206.1  182.6     75   9.4     1   6.8  62.6   99.4  282.6
+2016  364.4  321.6  321.1  212.1   88.1  27.5   5.7   3.2  11.7    176  285.6
+2015    392  365.7  275.5  141.1   91.5  15.8   6.9   6.1  71.9  176.9    195
+2014  324.4  281.9  223.9  135.5  100.2  19.1   8.3  19.3    16   92.3  222.6
+2013  429.2  402.2  376.6  209.5  158.4  43.6   0.6     5  41.5    105  303.9
+2012    336  435.9  201.9  230.3   83.3    35  12.4   2.4    58  154.6  296.2
+
+         12
+0
+2021  323.8
+2020  336.8
+2019  327.3
+2018  325.9
+2017    369
+2016  390.8
+2015  248.1
+2014  368.2
+2013  349.5
+2012  345.9
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Il est nécessaire de transformer ces données de manière à obtenir une matrice temporelle.}
+\PY{c+c1}{\PYZsh{}Transformation des données }
+\PY{n}{dju} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{p}{]}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{p}{[}\PY{p}{]}\PY{p}{\PYZcb{}}
+\PY{k}{for} \PY{n}{year} \PY{o+ow}{in} \PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{values}\PY{p}{:}
+    \PY{k}{for} \PY{n}{month} \PY{o+ow}{in} \PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{columns}\PY{p}{:}
+        \PY{n}{dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{year}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{month}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{data\PYZus{}chauff}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{year}\PY{p}{,}\PY{n}{month}\PY{p}{]}\PY{p}{)}
+\PY{n}{dju} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{dju}\PY{p}{)}
+\PY{n}{dju}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     mois dju\_chauffage
+0  2021-1         396.7
+1  2021-2         302.8
+2  2021-3           271
+3  2021-4         228.3
+4  2021-5         138.3
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{dju}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Indexation des données selon les mois d\PYZsq{}enregistrement}
+\PY{n}{dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{to\PYZus{}datetime}\PY{p}{(}\PY{n}{dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{dju}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dju}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+           dju\_chauffage
+mois
+2021-01-01         396.7
+2021-02-01         302.8
+2021-03-01           271
+2021-04-01         228.3
+2021-05-01         138.3
+{\ldots}                  {\ldots}
+2010-08-01          11.1
+2010-09-01          52.3
+2010-10-01         172.2
+2010-11-01           310
+2010-12-01           512
+
+[144 rows x 1 columns]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{dju\PYZus{}data}\PY{o}{=}\PY{n}{dju}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{144}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dju\PYZus{}data}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+           dju\_chauffage
+mois
+2010-01-01         499.2
+2010-02-01         371.4
+2010-03-01         294.5
+2010-04-01         165.3
+2010-05-01         140.9
+{\ldots}                  {\ldots}
+2021-08-01           5.1
+2021-09-01            21
+2021-10-01         150.7
+2021-11-01         310.8
+2021-12-01         323.8
+
+[144 rows x 1 columns]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}L\PYZsq{}extraction des données traités}
+\PY{c+c1}{\PYZsh{}Enregistrer les données dans un fichier csv}
+\PY{n}{dju\PYZus{}data}\PY{o}{.}\PY{n}{to\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}rec \PYZhy{} Feuille 1.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{encoding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{utf\PYZhy{}8}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Les donnée de l\PYZsq{}utilisation de chauffage en France en DJU=Degré jour unifié}
+
+\PY{c+c1}{\PYZsh{}indexer par dates}
+\PY{n}{dju\PYZus{}donnee}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{data\PYZus{}rec \PYZhy{} Feuille 1.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{index\PYZus{}col}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{parse\PYZus{}dates}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{dju\PYZus{}donnee}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+            dju\_chauffage
+mois
+2010-01-01          499.2
+2010-02-01          371.4
+2010-03-01          294.5
+2010-04-01          165.3
+2010-05-01          140.9
+{\ldots}                   {\ldots}
+2021-08-01            5.1
+2021-09-01           21.0
+2021-10-01          150.7
+2021-11-01          310.8
+2021-12-01          323.8
+
+[144 rows x 1 columns]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Courbe sur l\PYZsq{}année 2019}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2019}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DJU chauffage sur une année}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_34_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation des données mensuelles des Degrés Jour Unifiés (DJU) chauffage électrique}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{DJU du chauffage de 2010 à 2021}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Afficher les donnée par année}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{affichage par année}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_36_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Courbe sur toute la durée de moyenne annuelle mean()= Moyenne}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Moyenne annuelle}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_37_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{un-peut-de-statistiques-sur-nos-donnuxe9es}{%
+\subsection{Un peut de statistiques sur nos
+données}\label{un-peut-de-statistiques-sur-nos-donnuxe9es}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}On va afficher l\PYZsq{}écart type}
+\PY{c+c1}{\PYZsh{}une mesure de la dispersion des valeurs d\PYZsq{}un échantillon statistique}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_39_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}La moyenne}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}L\PYZsq{}ecart type}
+
+\PY{c+c1}{\PYZsh{} Ajout de la légende}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Données}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Moyenne}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Écart type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_40_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Statistiques descriptives de l\PYZsq{}échantillon dju}
+\PY{n}{dju\PYZus{}donnee}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+               count        mean         std  min     25\%     50\%     75\%  \textbackslash{}
+dju\_chauffage  144.0  173.346528  143.640781  0.0  26.125  156.05  302.95
+
+                 max
+dju\_chauffage  512.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Statistiques descriptives de l\PYZsq{}échantillon de la consommation d\PYZsq{}életricité en France}
+\PY{n}{consommation}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+               count          mean          std      min      25\%      50\%  \textbackslash{}
+consommationT  143.0  40183.048951  7202.641671  31004.0  33858.5  37284.0
+
+                   75\%      max
+consommationT  45838.0  57600.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}La fonction aggregate pour rassemnbler les statistique(moyenne, ecart type, min, max)}
+\PY{n}{dju\PYZus{}donnee}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{agg}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                  mean         std   min    max
+mois
+2010-12-31  212.625000  183.352408   0.0  512.0
+2011-12-31  150.775000  137.534849  11.9  392.0
+2012-12-31  182.658333  147.496542   2.4  435.9
+2013-12-31  202.083333  164.015741   0.6  429.2
+2014-12-31  150.975000  129.480270   8.3  368.2
+2015-12-31  165.541667  134.539609   6.1  392.0
+2016-12-31  183.983333  151.379300   3.2  390.8
+2017-12-31  170.066667  153.968228   1.0  467.9
+2018-12-31  166.866667  154.787158   0.0  432.6
+2019-12-31  165.758333  137.847791   0.0  404.9
+2020-12-31  148.841667  130.015981   0.9  339.0
+2021-12-31  179.983333  144.525347   0.2  396.7
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{cruxe9ation-dun-uxe9chantillon-de-travail-par-jointure-des-deux-pruxe9cuxe9dents-dataframe}{%
+\section{Création d'un échantillon de travail par jointure des deux
+précédents
+dataframe}\label{cruxe9ation-dun-uxe9chantillon-de-travail-par-jointure-des-deux-pruxe9cuxe9dents-dataframe}}
+
+On va rassembler les données du dataset consommation et du dataset
+dju\_donnee
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}inner = prendre les donnée de meme longueure comme clé \PYZdq{}mois\PYZdq{} avace la fonction merge}
+\PY{n}{conso\PYZus{}dju} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{consommation}\PY{p}{,} \PY{n}{dju\PYZus{}donnee}\PY{p}{,} \PY{n}{how}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{inner}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+            consommationT  dju\_chauffage
+mois
+2010-01-01          56342          499.2
+2010-02-01          48698          371.4
+2010-03-01          48294          294.5
+2010-04-01          38637          165.3
+2010-05-01          37284          140.9
+{\ldots}                   {\ldots}            {\ldots}
+2021-07-01          32959            0.2
+2021-08-01          31184            5.1
+2021-09-01          32350           21.0
+2021-10-01          36762          150.7
+2021-11-01          44458          310.8
+
+[143 rows x 2 columns]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation et de l\PYZsq{}utilisation de chauffage}
+\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{resample}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visualisation de la consommation et de l}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{utilisation de chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_46_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Comme la lecture est compliqué, on va les afficher séparément en
+respectant les échelles pour voir la tendance avec ``subplots=True''
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation et de l\PYZsq{}utilisation de chauffage}
+\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{subplots}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_48_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    On voit que les deux courbes sont super bien corrélées. On va calculer
+cette correction avec ``.corr()'' de pandas
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}La matrice de correlation}
+\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+               consommationT  dju\_chauffage
+consommationT       1.000000       0.970438
+dju\_chauffage       0.970438       1.000000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Une corrélation de \textbf{97\%} signifie qu'il y a une forte relation
+entre les deux variables que l'on étudie consommationT et
+dju\_chauffage.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}visualiser notre dataset consommation et dju avec la librairie \PYZdq{}seaborn\PYZdq{}}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<seaborn.axisgrid.PairGrid at 0x7f25358f8bb0>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+<Figure size 864x432 with 0 Axes>
+    \end{Verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_52_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Pour prédire la demande en électricité pour les années à venir, nous
+allons utiliser un modèle de régression. Ce modèle nous permettra de
+faire des prévisions précises sur la demande d'électricité.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Préparation des données pour établir la Régression linéaire }
+\PY{n}{y}\PY{o}{=}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{x}\PY{o}{=}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+mois
+2010-01-01    499.2
+2010-02-01    371.4
+2010-03-01    294.5
+2010-04-01    165.3
+2010-05-01    140.9
+              {\ldots}
+2021-07-01      0.2
+2021-08-01      5.1
+2021-09-01     21.0
+2021-10-01    150.7
+2021-11-01    310.8
+Name: dju\_chauffage, Length: 143, dtype: float64
+mois
+2010-01-01    56342
+2010-02-01    48698
+2010-03-01    48294
+2010-04-01    38637
+2010-05-01    37284
+              {\ldots}
+2021-07-01    32959
+2021-08-01    31184
+2021-09-01    32350
+2021-10-01    36762
+2021-11-01    44458
+Name: consommationT, Length: 143, dtype: int64
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{c+c1}{\PYZsh{}Permet d\PYZsq{}afficher le nuage de point afin de déterminer votre type de régression}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Évolution de de la consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en fonction du DJU chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_55_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    On constate que nos points peuvent être reliés par une droite, donc une
+\textbf{régression linéaire simple} paraît pertinente.
+
+    \hypertarget{ruxe9gression-linuxe9aire-avec-sklearn}{%
+\subsection{Régression Linéaire avec
+SKLearn}\label{ruxe9gression-linuxe9aire-avec-sklearn}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LinearRegression}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}conso\PYZus{}dju}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y}\PY{o}{=}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{X}\PY{o}{=}\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{axis}\PY{o}{=} \PY{l+m+mi}{1}\PY{p}{)}\PY{c+c1}{\PYZsh{} X=dju\PYZus{}chauffage}
+\PY{c+c1}{\PYZsh{}print(X, y)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Évolution de de la consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en fonction du DJU chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_61_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model}\PY{o}{=}\PY{n}{LinearRegression}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}Création du model de regression lineaire}
+\PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{c+c1}{\PYZsh{}Entrainer le modèle sur les données X, y divisées en deux tableaux}
+\PY{n}{model}\PY{o}{.}\PY{n}{score}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{c+c1}{\PYZsh{} Evaluer le modèle}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.9417490575514472
+\end{Verbatim}
+\end{tcolorbox}
+        
+    On obtient un score de 94\% c'est le coefficient de détermination est de
+R²=1-(sum\_i=1\textsuperscript{n(yi-ŷi)²)/(sum\_i=1}n(yi-bar\{ŷ\}i)²) de
+la méthode du moindre carrée.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{prediction}\PY{o}{=}\PY{n}{model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{c+c1}{\PYZsh{}Utiliser le model pour la prédire}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{)}\PY{c+c1}{\PYZsh{}Nuage de point }
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{prediction}\PY{p}{,} \PY{n}{c}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}La droite de régression}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prédiction de la consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en fonction des DJU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_64_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{prediction}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[56096.49699525 49875.31664577 46131.89904895 39842.56805402
+ 38654.79966179 32896.07012077 31795.92398698 32336.26124738
+ 34341.83738508 40178.45337805 46886.42405221 56719.58861084
+ 50878.10471463 46633.29308337 43629.79678007 35573.41690654
+ 33908.59399611 33324.44560649 32526.10947401 32375.20447336
+ 32925.27754025 38007.36852996 42826.59274434 47017.85743987
+ 48152.07889639 53015.11423999 41624.22064237 43006.70516447
+ 35850.88739161 33499.69012338 32399.54398959 31912.75366491
+ 34619.30787015 39321.70240661 46214.65340415 48634.00131783
+ 52688.96472245 51374.6308458  50128.44761461 41994.18128913
+ 39506.68272999 33918.32980261 31825.13140646 32039.31914932
+ 33816.10383442 36907.22239617 46589.48195415 48809.24583471
+ 47587.40211976 45518.54323985 42695.15935667 38391.93288646
+ 36673.56304032 32725.69350713 32199.95995647 32735.42931362
+ 32574.78850648 36288.99868382 42631.87661446 49719.54374188
+ 50878.10471463 49597.8461607  45206.99743205 38664.53546828
+ 36250.05545785 32565.05269998 32131.80931101 32092.86608504
+ 35295.94642147 40407.24483066 41288.33531833 43873.19194241
+ 49534.5634185  47451.10082884 47426.76131261 42120.74677355
+ 36084.54674745 33134.59737986 32073.39447205 31951.69689088
+ 32365.46866686 40363.43370143 45698.65565998 50819.68987566
+ 54572.84327898 45348.16662621 41828.67257874 40684.71531573
+ 35446.85142212 32253.50689219 31844.60301945 32126.94140777
+ 34843.23141951 36634.61981435 45552.61856257 49758.48696785
+ 46565.14243792 52854.47343285 47095.74389182 37622.80417346
+ 34517.08190197 32190.22414998 31795.92398698 31956.56479413
+ 33465.61480065 37754.23756112 45547.75065933 47660.42066846
+ 51506.06423347 44856.50839827 43143.00645538 39998.34095792
+ 37535.18191502 32983.69237921 31795.92398698 31878.67834218
+ 33095.65415389 38304.31062802 45552.61856257 47728.57131391
+ 48298.1159938  43946.21049111 44871.11210802 35758.39722992
+ 34994.13642016 32798.71205583 31839.7351162  32014.97963309
+ 33465.61480065 39462.87160077 42855.80016382 48191.02212237
+ 51106.89616723 46535.93501844 44987.94178594 42909.34709954
+ 38528.23417737 32336.26124738 31805.65979348 32044.18705257
+ 32818.18366882 39131.85417998 46925.36727818]
+    \end{Verbatim}
+
+    \hypertarget{ruxe9gression-linuxe9aire-avec-statsmodels}{%
+\section{Régression Linéaire avec
+Statsmodels}\label{ruxe9gression-linuxe9aire-avec-statsmodels}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Préparation des données pour établir la Régression linéaire}
+\PY{n}{y} \PY{o}{=} \PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{x} \PY{o}{=} \PY{n}{sm}\PY{o}{.}\PY{n}{add\PYZus{}constant}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Régression linéaire Statsmodels}
+\PY{c+c1}{\PYZsh{}Definition du modèle et entrainement}
+\PY{n}{reg} \PY{o}{=} \PY{n}{sm}\PY{o}{.}\PY{n}{OLS}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{x}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}\PY{c+c1}{\PYZsh{}(Ordinary Least Squares)}
+\PY{c+c1}{\PYZsh{}summary: affichage des caractéristique du modèle de régression construit}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{reg}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+                            OLS Regression Results
+==============================================================================
+Dep. Variable:          consommationT   R-squared:                       0.942
+Model:                            OLS   Adj. R-squared:                  0.941
+Method:                 Least Squares   F-statistic:                     2280.
+Date:                Fri, 16 Dec 2022   Prob (F-statistic):           6.21e-89
+Time:                        18:22:22   Log-Likelihood:                -1269.3
+No. Observations:                 143   AIC:                             2543.
+Df Residuals:                     141   BIC:                             2549.
+Df Model:                           1
+Covariance Type:            nonrobust
+================================================================================
+=
+                    coef    std err          t      P>|t|      [0.025
+0.975]
+--------------------------------------------------------------------------------
+-
+const           3.18e+04    228.344    139.246      0.000    3.13e+04
+3.22e+04
+dju\_chauffage    48.6790      1.020     47.745      0.000      46.663
+50.695
+==============================================================================
+Omnibus:                        3.141   Durbin-Watson:                   1.555
+Prob(Omnibus):                  0.208   Jarque-Bera (JB):                2.828
+Skew:                           0.201   Prob(JB):                        0.243
+Kurtosis:                       3.560   Cond. No.                         351.
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly
+specified.
+    \end{Verbatim}
+
+    Cette sortie est un résumé des résultats d'une régression linéaire par
+moindres carrés (OLS en anglais). On a modéliser la relation entre une
+variable dépendante consommationT et une variables indépendantes
+dju\_chauffage.
+
+Le but de cette régression est de trouver les coefficients qui
+minimisent l'\textbf{erreur} entre les valeurs prédites par le modèle et
+les valeurs réelles de la variable dépendante.
+
+\textbf{Le R-carré} (R-squared en anglais) indique la qualité du modèle.
+Plus le R-carré est proche de 1, meilleure est la qualité du modèle.
+Ici, le R-carré est de 0,942, ce qui suggère que le modèle explique bien
+les variations de la variable dépendante.
+
+\textbf{``coef''} donne les coefficients estimés pour chaque variable
+indépendante. Ici, on peut voir que le coefficient associé à
+dju\_chauffage est de 48,679. Cela signifie que pour chaque unité
+supplémentaire de dju\_chauffage, on s'attend à ce que la consommationT
+augmente de 48,679 unités.
+
+\textbf{``std err''} donne l'erreur standard associée à chaque
+coefficient. Plus l'erreur standard est faible, plus le coefficient est
+fiable. Ici, l'erreur standard associée au coefficient de dju\_chauffage
+est de 1,020, ce qui indique que le coefficient est assez fiable.
+
+\textbf{``t''} donne la valeur du test t associé à chaque coefficient.
+Plus la valeur du test t est élevée, plus le coefficient est
+significatif. Ici, la valeur du test t associée au coefficient de
+dju\_chauffage est de 47,745, ce qui suggère que le coefficient est
+statistiquement significatif.
+
+\textbf{``P\textgreater\textbar t\textbar{}''} donne la probabilité de
+ne pas rejeter l'hypothèse nulle pour chaque coefficient. Plus cette
+probabilité est faible, plus le coefficient est significatif. Ici, la
+probabilité associée au coefficient de dju\_chauffage est de 6,21e-89,
+ce qui indique que le coefficient est très significatif.
+
+\textbf{``0.025 0.975''} donne les limites de confiance des coefficients
+estimés. Cela signifie que nous pouvons être 95\% sûrs que la valeur
+réelle du coefficient se trouve dans cette plage. Ici, nous pouvons être
+95\% sûrs que la valeur réelle du coefficient de dju\_chauffage se
+trouve entre 46,663 et 50
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{style}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{prediction}\PY{o}{=}\PY{n}{reg}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{sm}\PY{o}{.}\PY{n}{add\PYZus{}constant}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{c+c1}{\PYZsh{}Pour la prédiction}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{prediction}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prédiction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prédiction de la consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité en fonction des DJU de chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_70_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Coefficient de régression linéaire }
+\PY{c+c1}{\PYZsh{}Affichage des paramètre de la droite de régression estimé dans y=ax+b}
+\PY{n}{reg}\PY{o}{.}\PY{n}{params}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{c+c1}{\PYZsh{} affichage de a}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+48.67903246847878
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Calcul de la correction : l\PYZsq{}effet DJU est retranché à la consommation totale}
+\PY{c+c1}{\PYZsh{}Affichage de b}
+\PY{c+c1}{\PYZsh{}b=y\PYZhy{}ax}
+\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conso\PYZus{}correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{*}\PY{n}{reg}\PY{o}{.}\PY{n}{params}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dju\PYZus{}chauffage}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conso\PYZus{}correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+mois
+2010-01-01    32041.426992
+2010-02-01    30618.607341
+2010-03-01    33958.024938
+2010-04-01    30590.355933
+2010-05-01    30425.124325
+                  {\ldots}
+2021-07-01    32949.264194
+2021-08-01    30935.736934
+2021-09-01    31327.740318
+2021-10-01    29426.069807
+2021-11-01    29328.556709
+Name: conso\_correction, Length: 143, dtype: float64
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{,} \PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation en électricité avant et après correction}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ConsommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conso\PYZus{}correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation corrigée}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation en électricité avant et après correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_73_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la consommation et de l\PYZsq{}utilisation de chauffage}
+\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommationT}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conso\PYZus{}correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{subplots}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_74_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Distribution des résidus}
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{n}{reg}\PY{o}{.}\PY{n}{resid}\PY{p}{,} \PY{n}{density}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{model\PYZus{}norm\PYZus{}residuals} \PY{o}{=} \PY{n}{reg}\PY{o}{.}\PY{n}{get\PYZus{}influence}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{resid\PYZus{}studentized\PYZus{}internal}
+\PY{c+c1}{\PYZsh{}ŷ=âx+b\PYZca{} la droite de reg estimée}
+\PY{n}{QQ} \PY{o}{=} \PY{n}{ProbPlot}\PY{p}{(}\PY{n}{model\PYZus{}norm\PYZus{}residuals}\PY{p}{)}
+\PY{n}{QQ}\PY{o}{.}\PY{n}{qqplot}\PY{p}{(}\PY{n}{line}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{45}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsh{}4C72B0}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Q\PYZhy{}Q Plot}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Histogramme des résidus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valeurs résiduelles}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Nombre de résidus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_75_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    En régression linéaire, on cherche à modéliser la relation entre une
+variable indépendante et une variable dépendante à l'aide d'une droite.
+Le résidu d'une observation est la différence entre la valeur observée
+de la variable dépendante et la valeur prédite par la droite de
+régression pour la valeur de la variable indépendante correspondante. La
+normalité des résidus est un critère important pour vérifier la validité
+de la régression linéaire.
+
+Si les résidus ne sont pas distribués de manière normale, cela peut
+signifier que la régression linéaire n'est pas appropriée pour modéliser
+la relation entre les variables
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Verification de l\PYZsq{}hypothèse de normalité de residu Epsilon= min(y\PYZhy{}(ax+b))}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{distplot}\PY{p}{(}\PY{n}{reg}\PY{o}{.}\PY{n}{resid}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_77_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    La distribution des résidus est satisfaisante. En effet les résidus
+suivent bien la distribution théorique d'une loi normale
+
+    \hypertarget{suxe9rie-temporelle-avec-le-moduxe8le-additif}{%
+\section{Série temporelle avec le modèle
+additif}\label{suxe9rie-temporelle-avec-le-moduxe8le-additif}}
+
+    Un modèle de série temporelle est une équation qui précise comment les
+composantes de la tendance, de la saisonnalité et du bruit s'intègrent
+pour créer cette série chronologique.
+
+Par exemple X(t)=Tendance(t)+S(t)+epsilon(t) epsilon(t):le bruit s(t):
+variation saisonnière selon la période t Tendance: l'évolution générale
+dans le temps
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{tsa}\PY{n+nn}{.}\PY{n+nn}{seasonal} \PY{k+kn}{import} \PY{n}{seasonal\PYZus{}decompose}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{c+c1}{\PYZsh{}On calcul l\PYZsq{}ecart saisonnier entre deux pic ou deux creu}
+\PY{n}{decomposition} \PY{o}{=} \PY{n}{seasonal\PYZus{}decompose}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conso\PYZus{}correction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}  \PY{n}{model}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{additive}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{decomposition}\PY{o}{.}\PY{n}{observed}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Série}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}\PY{c+c1}{\PYZsh{} serie temporelle X(t)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{decomposition}\PY{o}{.}\PY{n}{trend}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Tendance}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}\PY{c+c1}{\PYZsh{}Tandance: levolution générale dans le temps}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{decomposition}\PY{o}{.}\PY{n}{seasonal}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Saisonnalité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}\PY{c+c1}{\PYZsh{}Saisonnalité  S(t)=Y\PYZhy{}tandance}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{decomposition}\PY{o}{.}\PY{n}{resid}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bo}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Résidus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}\PY{c+c1}{\PYZsh{}Residu= X(t)\PYZhy{}Tendance(t)\PYZhy{}S(t)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_81_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Comme on a définit, la série temporelle, nous pouvons prédire la
+consommation d'énergie pour les prochaines années en prenant en compte
+l'utilisation du chauffage électrique.
+
+    \hypertarget{pruxe9vision-par-lissage-exponentiel-par-la-muxe9thode-de-holt-winters}{%
+\subsection{Prévision par lissage exponentiel par la méthode de
+Holt-Winters}\label{pruxe9vision-par-lissage-exponentiel-par-la-muxe9thode-de-holt-winters}}
+
+Le modèle additif de Holt-Winters est une extension du lissage
+exponentiel de Holt qui permet de capturer la saisonnalité. Cette
+méthode utilise des valeurs lissées exponentiellement pour prévoir le
+niveau, la tendance et l'ajustement saisonnier. Cette approche additive
+saisonnière ajoute le facteur de saisonnalité à la prévision à
+tendances, ce qui donne lieu à la prévision additive de Holt-Winters.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{tsa}\PY{n+nn}{.}\PY{n+nn}{api} \PY{k+kn}{import} \PY{n}{ExponentialSmoothing}
+
+\PY{c+c1}{\PYZsh{} Chargement des données de consommation dju}
+\PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{asarray}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{conso\PYZus{}correction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Création d\PYZsq{}un modèle de lissage exponentiel en utilisant les données de consommation}
+\PY{c+c1}{\PYZsh{} La période saisonnière est définie à 71 mois et un trend et une saisonnalité sont ajoutés au modèle}
+\PY{n}{hw} \PY{o}{=} \PY{n}{ExponentialSmoothing}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{seasonal\PYZus{}periods}\PY{o}{=}\PY{l+m+mi}{71}\PY{p}{,} \PY{n}{trend}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{add}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{seasonal}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{add}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Prédiction de la consommation pour les 12 prochains mois}
+\PY{n}{hw\PYZus{}pred0} \PY{o}{=} \PY{n}{hw}\PY{o}{.}\PY{n}{forecast}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Affichage des prévisions}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{hw\PYZus{}pred0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[32061.79135883 30355.71785545 31200.17037064 28306.5429269
+ 29971.88286687 31035.64330712 33002.66309132 31486.4728327
+ 32174.97077571 29529.24022186 29897.64965973 31184.2099622 ]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Visualisation de la prévision sur 12 mois par Holt\PYZhy{}Winters}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{conso\PYZus{}correction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation corrigée}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{date\PYZus{}range}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{periods}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{,} \PY{n}{freq}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{M}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{hw\PYZus{}pred0}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prévision Holt\PYZhy{}Winters}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{électricité en France \PYZhy{} Prévision pour les 12 prochains mois}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois\PYZhy{}années}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_85_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{conso\PYZus{}correction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{12}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation corrigée}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{date\PYZus{}range}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{periods}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{,} \PY{n}{freq}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{M}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{hw\PYZus{}pred0}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prévision Holt\PYZhy{}Winters}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s2}{électricité en France 2021 \PYZhy{} Prévision 2022}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mois\PYZhy{}années}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_86_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    En effet, la prévision à court terme de la consommation d'électricité
+est un élément important pour assurer l'équilibre entre la production et
+la consommation d'électricité au cours d'une journée. Cela permet aux
+gestionnaires du réseau électrique de s'assurer qu'il y a suffisamment
+de production pour répondre à la demande, et de prendre les mesures
+nécessaires pour éviter des coupures de courant ou des surcharges sur le
+réseau.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hw\PYZus{}pred} \PY{o}{=} \PY{n}{hw}\PY{o}{.}\PY{n}{forecast}\PY{p}{(}\PY{l+m+mi}{71}\PY{p}{)}\PY{c+c1}{\PYZsh{}prévoir sur 71 mois}
+\PY{c+c1}{\PYZsh{}Visualisation de la prévision sur 71 mois par Holt\PYZhy{}Winters}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{conso\PYZus{}correction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation corrigée}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{date\PYZus{}range}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{periods}\PY{o}{=}\PY{l+m+mi}{71}\PY{p}{,} \PY{n}{freq}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{M}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{hw\PYZus{}pred}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prévision Holt\PYZhy{}Winters}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{électricité en France \PYZhy{} Prévision de 2022 à 2032}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_88_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualisation de la prévision sur sur 142 mois par Holt\PYZhy{}Winters}
+\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{conso\PYZus{}correction}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Consommation corrigée}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{date\PYZus{}range}\PY{p}{(}\PY{n}{conso\PYZus{}dju}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{n+nb}{len}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{periods}\PY{o}{=}\PY{l+m+mi}{71}\PY{p}{,} \PY{n}{freq}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{2M}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{hw\PYZus{}pred}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prévision Holt\PYZhy{}Winters}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Consommation d}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{électricité en France \PYZhy{} Prévision de 2022 à 2035}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{année}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{consommation d}\PY{l+s+se}{\PYZbs{}\PYZsq{}}\PY{l+s+s1}{électricité}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_89_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+En conclusion, l'utilisation des techniques de machine learning pour
+analyser, classer et prédire la consommation d'électricité peut offrir
+de nombreux avantages, tels que l'optimisation de la production
+d'électricité et la réduction des coûts associés à la consommation
+d'énergie. Grâce à leur capacité à extraire des informations précieuses
+à partir de données complexes, les algorithmes d'apprentissage
+automatique peuvent jouer un rôle crucial dans la gestion efficace de la
+consommation d'électricité. Cependant, il est important de noter que
+cette approche doit être utilisée avec prudence et en prenant en compte
+les différents facteurs qui peuvent affecter la consommation
+d'électricité, afin de garantir des résultats précis et fiables.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
